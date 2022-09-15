@@ -22,19 +22,68 @@
 namespace CnabParser;
 
 use CnabParser\Format\Picture;
-use CnabParser\IntercambioBancarioAbstract;
+use CnabParser\Model\Linha;
+use CnabParser\Model\Retorno;
+use CnabParser\Parser\Layout;
 use CnabParser\IntercambioBancarioFileAbstract;
 
-abstract class IntercambioBancarioRemessaFileAbstract extends IntercambioBancarioFileAbstract
+abstract class IntercambioBancarioGeraRetornoFileAbstract extends IntercambioBancarioFileAbstract
 {
-    // Para CNAB200
-    const REGISTRO_HEADER_ARQUIVO = 01;
-    const REGISTRO_DETALHES = 02;
-    const REGISTRO_TRAILER_ARQUIVO = 03;
+    // Para CNAB240
+    const REGISTRO_HEADER_ARQUIVO = 0;
+    const REGISTRO_HEADER_LOTE = 1;
+    const REGISTRO_DETALHES = 3;
+    const REGISTRO_TRAILER_LOTE = 5;
+    const REGISTRO_TRAILER_ARQUIVO = 9;
+
+    // Para CNAB400
+
+    /**
+     * @var CnabParser\Parser\Layout
+     */
+    protected $layout;
+
+    protected $path;
+
+    protected $linhas;
+
+    /**
+     * Total de lotes em um arquivo
+     * @var integer
+     */
+    protected $totalLotes;
 
     public function __construct(IntercambioBancarioAbstract $model)
     {
         $this->model = $model;
+    }
+
+    public function getTotalLotes()
+    {
+        return $this->totalLotes;
+    }
+
+    protected function calculaTotalLotes()
+    {
+        $this->totalLotes = 1;
+
+        $layout = $this->layout->getLayout();
+
+        $linhaTrailerArquivoStr = $this->linhas[count($this->linhas) - 1];
+        $linha = new Linha($linhaTrailerArquivoStr, $this->layout, 'retorno');
+
+        if (strtoupper($layout) === strtoupper('cnab240')) {
+            // conforme cnab240 febraban
+            $definicao = array(
+                'pos'     => array(18, 23),
+                'picture' => '9(6)',
+            );
+            $this->totalLotes = (int) $linha->obterValorCampo($definicao);
+        } elseif (strtoupper($layout) === strtoupper('cnab400')) {
+            $this->totalLotes = 1; // cnab400 apenas 1 lote
+        }
+
+        return $this->totalLotes;
     }
 
     protected function encode($fieldsDef, $modelSection)

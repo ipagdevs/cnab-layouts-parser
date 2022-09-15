@@ -21,80 +21,116 @@
 
 namespace CnabParser\Model;
 
-use StdClass AS DataContainer;
 use CnabParser\Model\Linha;
+use StdClass as DataContainer;
+use CnabParser\IntercambioBancarioAbstract;
+use CnabParser\Parser\Layout;
+use CnabParser\Model\HeaderArquivo;
+use CnabParser\Model\Lote;
+use CnabParser\Model\TrailerArquivo;
 
-class Retorno
+class Retorno extends IntercambioBancarioAbstract
 {
-	/**
-	 * @var DataContainer
-	 */
-	public $header_arquivo;
+    /**
+     * @var DataContainer
+     */
+    public $header_arquivo;
+
+    /**
+     * @var DataContainer
+     */
+    public $trailer_arquivo;
+
+    /**
+     * @var Array of DataContainer (header_lote(1),detalhes(1)(n),trailer_lote(1) ... header_lote(m),detalhes(1)(n),trailer_lote(m))
+     */
+    public $lotes;
 
 	/**
-	 * @var DataContainer
+	 * @var CnabParser\Parser\Layout
 	 */
-	public $trailer_arquivo;
+	protected $layout;
 
-	/**
-	 * @var Array of DataContainer (header_lote(1),detalhes(1)(n),trailer_lote(1) ... header_lote(m),detalhes(1)(n),trailer_lote(m))
-	 */
-	public $lotes;
+    public function __construct(Layout $layout = null)
+    {
+        if (!is_null($layout)) {
+            $this->layout = $layout;
+            $this->header = new HeaderArquivo();
+            $this->trailer = new TrailerArquivo();
+            $this->lotes = array();
 
-	public function __construct()
-	{
-		$this->header_arquivo = new DataContainer();
-		$this->trailer_arquivo = new DataContainer();
-		$this->lotes = array();
-	}
+            $retornoLayout = $this->layout->getRetornoLayout();
 
-	public function decodeHeaderLote(Linha $linha)
-	{
-		$dados = array();
-		
-		$layout = $linha->getTipo() === 'remessa'
-			? $linha->getLayout()->getRemessaLayout()
-			: $linha->getLayout()->getRetornoLayout();
-		
-		$campos = $layout['header_lote'];
-		
-		foreach ($campos as $nome => $definicao) {
-			$dados[$nome] = $linha->obterValorCampo($definicao);
-		}
+            if (isset($retornoLayout['header_arquivo'])) {
+                foreach ($retornoLayout['header_arquivo'] as $field => $definition) {
+                    $this->header->$field = (isset($definition['default'])) ? $definition['default'] : '';
+                }
+            }
 
-		return $dados;
-	}
+            if (isset($retornoLayout['trailer_arquivo'])) {
+                foreach ($retornoLayout['trailer_arquivo'] as $field => $definition) {
+                    $this->trailer->$field = (isset($definition['default'])) ? $definition['default'] : '';
+                }
+            }
+        } else {
+            $this->header_arquivo = new DataContainer();
+            $this->trailer_arquivo = new DataContainer();
+            $this->lotes = array();
+        }
+    }
 
-	public function decodeTrailerLote(Linha $linha)
-	{
-		$dados = array();
-		
-		$layout = $linha->getTipo() === 'remessa'
-			? $linha->getLayout()->getRemessaLayout()
-			: $linha->getLayout()->getRetornoLayout();
-		
-		$campos = $layout['trailer_lote'];
-		
-		foreach ($campos as $nome => $definicao) {
-			$dados[$nome] = $linha->obterValorCampo($definicao);
-		}
+    public function decodeHeaderLote(Linha $linha)
+    {
+        $dados = array();
 
-		return $dados;
-	}
+        $layout = $linha->getTipo() === 'remessa'
+        ? $linha->getLayout()->getRemessaLayout()
+        : $linha->getLayout()->getRetornoLayout();
 
-	public function getTotalLotes()
-	{
-		return count($this->lotes);
-	}
+        $campos = $layout['header_lote'];
 
-	public function getTotalTitulos()
-	{
-		$total = 0;
-		
-		foreach ($this->lotes as $lote) {
-			$total += count($lote['titulos']);
-		}
+        foreach ($campos as $nome => $definicao) {
+            $dados[$nome] = $linha->obterValorCampo($definicao);
+        }
 
-		return $total;
-	}
+        return $dados;
+    }
+
+    public function decodeTrailerLote(Linha $linha)
+    {
+        $dados = array();
+
+        $layout = $linha->getTipo() === 'remessa'
+        ? $linha->getLayout()->getRemessaLayout()
+        : $linha->getLayout()->getRetornoLayout();
+
+        $campos = $layout['trailer_lote'];
+
+        foreach ($campos as $nome => $definicao) {
+            $dados[$nome] = $linha->obterValorCampo($definicao);
+        }
+
+        return $dados;
+    }
+
+    public function getTotalLotes()
+    {
+        return count($this->lotes);
+    }
+
+    public function getTotalTitulos()
+    {
+        $total = 0;
+
+        foreach ($this->lotes as $lote) {
+            $total += count($lote['titulos']);
+        }
+
+        return $total;
+    }
+
+    public function novoLote($sequencial = 1)
+    {
+        return new Lote($this->layout->getRetornoLayout(), $sequencial);
+    }
 }

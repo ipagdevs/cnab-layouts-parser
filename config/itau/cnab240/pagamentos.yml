@@ -18,7 +18,7 @@
 
 servico: pagamento_cheque_op_doc_ted_credito_cc
 
-versao: 'itau_sispag_fev2014'
+versao: 'itau_sispag_out2020'
 
 layout: 'cnab240'
 
@@ -44,7 +44,7 @@ remessa:
     layout_arquivo:
       pos: [15,17]
       picture: '9(3)'
-      default: '081'
+      default: '080'
     tipo_inscricao:
       pos: [18,18]
       picture: '9(1)'
@@ -72,11 +72,12 @@ remessa:
     dac_debito:
       pos: [72,72]
       picture: '9(1)'
+      default: '0'
     nome_empresa:
       pos: [73,102]
       picture: 'X(30)'
     nome_banco:
-      pos: [103,142]
+      pos: [103,132]
       picture: 'X(30)'
     brancos_05:
       pos: [133,142]
@@ -113,6 +114,7 @@ remessa:
     codigo_lote:
       pos: [4,7]
       picture: '9(4)'
+      default: '0000'
     tipo_registro:
       pos: [8,8]
       picture: '9(1)'
@@ -121,12 +123,14 @@ remessa:
       pos: [9,9]
       picture: 'X(1)'
       default: 'C'
-    tipo_pagamento:
+    servico: #tipo_pagamento
       pos: [10,11]
       picture: '9(2)'
-    forma_pagamento:
+      default: '98'
+    forma_lancamento:
       pos: [12,13]
       picture: '9(2)'
+      default: '03'
     layout_lote:
       pos: [14,16]
       picture: '9(3)'
@@ -135,7 +139,7 @@ remessa:
       pos: [17,17]
       picture: 'X(1)'
       default: ''
-    tipo_inscricao_debito:
+    tipo_inscricao:
       pos: [18,18]
       picture: '9(1)'
     inscricao_numero:
@@ -165,6 +169,7 @@ remessa:
     dac_debito:
       pos: [72,72]
       picture: '9(1)'
+      default: '0'
     nome_empresa:
       pos: [73,102]
       picture: 'X(30)'
@@ -174,7 +179,7 @@ remessa:
     historico_cc_debito:
       pos: [133,142]
       picture: 'X(10)'
-    endereco_empresa:
+    logradouro:
       pos: [143,172]
       picture: 'X(30)'
     numero:
@@ -183,7 +188,7 @@ remessa:
     complemento:
       pos: [178,192]
       picture: 'X(15)'
-      default: 'CASA'
+      default: ''
     cidade:
       pos: [193,212]
       picture: 'X(20)'
@@ -300,8 +305,21 @@ remessa:
         pos: [21,23]
         picture: '9(3)'
       agencia_favorecido:
-        pos: [24,43]
-        picture: 'X(20)'
+        pos: [24,28]
+        picture: '9(5)'
+      agencia_favorecido_dv:
+        pos: [29,29]
+        picture: 'X(1)'
+      conta_favorecido:
+        pos: [30,41]
+        picture: '9(12)'
+      brancos_00:
+        pos: [42,42]
+        picture: 'X(1)'
+      dac_favorecido:
+        pos: [43,43]
+        picture: '9(1)'
+        default: 0
       nome_favorecido:
         pos: [44,73]
         picture: 'X(30)'
@@ -318,6 +336,7 @@ remessa:
       codigo_ispb:
         pos: [105,112]
         picture: '9(8)'
+        default: 0
       zeros_01:
         pos: [113,119]
         picture: '9(7)'
@@ -335,9 +354,11 @@ remessa:
       data_efetiva:
         pos: [155,162]
         picture: '9(8)'
+        default: 0
       valor_efetivo:
         pos: [163,177]
         picture: '9(13)V9(2)'
+        default: 0
       finalidade:
         pos: [178,195]
         picture: 'X(18)'
@@ -348,6 +369,7 @@ remessa:
       num_documento:
         pos: [198,203]
         picture: '9(6)'
+        default: 0
       num_inscricao_favorecido:
         pos: [204,217]
         picture: '9(14)'
@@ -973,8 +995,21 @@ retorno:
         pos: [21,23]
         picture: '9(3)'
       agencia_favorecido:
-        pos: [24,43]
-        picture: 'X(20)'
+        pos: [24,28]
+        picture: '9(5)'
+      agencia_favorecido_dv:
+        pos: [29,29]
+        picture: 'X(1)'
+      conta_favorecido:
+        pos: [30,41]
+        picture: '9(12)'
+      brancos_00:
+        pos: [42,42]
+        picture: 'X(1)'
+      dac_favorecido:
+        pos: [43,43]
+        picture: '9(1)'
+        default: 0
       nome_favorecido:
         pos: [44,73]
         picture: 'X(30)'
@@ -991,6 +1026,7 @@ retorno:
       codigo_ispb:
         pos: [105,112]
         picture: '9(8)'
+        default: 0
       zeros_01:
         pos: [113,119]
         picture: '9(7)'
@@ -1008,9 +1044,11 @@ retorno:
       data_efetiva:
         pos: [155,162]
         picture: '9(8)'
+        default: 0
       valor_efetivo:
         pos: [163,177]
         picture: '9(13)V9(2)'
+        default: 0
       finalidade:
         pos: [178,195]
         picture: 'X(18)'
@@ -1021,7 +1059,8 @@ retorno:
       num_documento:
         pos: [198,203]
         picture: '9(6)'
-      num_inscricao_favorecido:
+        default: 0
+      inscricao_favorecido:
         pos: [204,217]
         picture: '9(14)'
       finalidade_doc_status_funcionario:

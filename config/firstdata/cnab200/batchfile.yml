@@ -1,0 +1,249 @@
+# FORMATO: FIRSTDATA - CNAB200
+# OBJETIVO DO ARQUIVO: Processamento de cobranças em lote
+#
+# TAMANHO DO REGISTRO
+# O Tamanho do Registro é de 240 bytes.
+#
+# ALINHAMENTO DE CAMPOS
+# - Campos Numéricos (9) = Sempre à direita e preenchidos com zeros à esquerda.
+# - Campos Alfanuméricos (X) = Sempre à esquerda e preenchidos com brancos à direita.
+# Pagamento através de Cheque, OP, DOC, TED, ou crédito em conta corrente:
+#
+# - Segmento H - (Obrigatório)
+# - Segmento D - (Obrigatório)
+# - Segmento T – (Obrigatório)
+#
+
+servico: batch_file
+
+versao: 'firstdata_03_mar2015'
+
+layout: 'cnab200'
+
+remessa:
+
+  header_arquivo:
+    tipo_registro:
+      pos: [1,2]
+      picture: '9(2)'
+      default: 01
+    data_arquivo:
+      pos: [3,10]
+      picture: '9(8)' #AAAAMMDD
+    data_transacao:
+      pos: [11,18]
+      picture: '9(8)' #AAAAMMDD
+    codigo_cliente:
+      pos: [19, 28]
+      picture: '9(10)'
+    identificador_lote:
+      pos: [29,48]
+      picture: 'X(20)'
+    tipo_arquivo:
+      pos: [49,49]
+      picture: 'X(1)'
+      default: 'P' #P = remessa / R = retorno
+    status:
+      pos: [50,51]
+      picture: '9(2)'
+    brancos:
+      pos: [52,200]
+      picture: 'X(149)'
+      default: ''
+
+  trailer_arquivo:
+    tipo_registro:
+      pos: [1,2]
+      picture: '9(2)'
+      default: 03
+    total_registros:
+      pos: [3,10]
+      picture: '9(8)'
+    valor_total:
+      pos: [11,24]
+      picture: '9(12)V9(2)'
+    brancos:
+      pos: [25,200]
+      picture: 'X(176)'
+      default: ''
+
+  detalhes:
+
+    segmento_02:
+      tipo_registro:
+        pos: [1,2]
+        picture: '9(2)'
+        default: 02
+      numero_cartao:
+        pos: [3,22]
+        picture: 'X(20)'
+      valor_compra:
+        pos: [23,34]
+        picture: '9(10)V9(2)'
+      ref_transacao:
+        pos: [35,50]
+        picture: '9(16)'
+      identificacao_registro:
+        pos: [51,51]
+        picture: '9(1)' #0 = req. inicial / 1 = transação aprovada / 2 = transação negada
+      codigo_autorizacao:
+        pos: [52,57]
+        picture: 'X(6)'
+      validade_cartao:
+        pos: [58,61]
+        picture: 'X(4)'
+      cod_resposta:
+        pos: [62,63]
+        picture: 'X(2)'
+      iso:
+        pos: [64,66]
+        picture: '9(3)'
+        default: 986
+      flag_cvv:
+        pos: [67,69]
+        picture: '9(3)'
+      cvv:
+        pos: [70,72]
+        picture: '9(3)'
+      tipo_transacao:
+        pos: [73,73]
+        picture: '9(1)'
+      parcelamento:
+        pos: [74,75]
+        picture: '9(2)' # 00 = a vista / 02, 03, 04, etc.. parcelas
+      tipo_estorno:
+        pos: [76,76]
+        picture: '9(1)' # 0 = compra / 1 = estorno/cancelamento
+      data_transacao:
+        pos: [77,84]
+        picture: '9(8)' #AAAAMMDD
+      valor_estorno:
+        pos: [85,96]
+        picture: '9(10)V9(2)'
+      numero_cliente:
+        pos: [97,111]
+        picture: 'X(15)'
+      solicitacao_estorno:
+        pos: [112,126]
+        picture: 'X(15)'
+      identificacao_terminal:
+        pos: [127,134]
+        picture: 'X(8)'
+      brancos:
+        pos: [135,200]
+        picture: 'X(66)'
+        default: ''
+
+retorno:
+
+  header_arquivo:
+    tipo_registro:
+      pos: [1,2]
+      picture: '9(2)'
+      default: 01
+    data_arquivo:
+      pos: [3,10]
+      picture: '9(8)' #AAAAMMDD
+    data_transacao:
+      pos: [11,18]
+      picture: '9(8)' #AAAAMMDD
+    codigo_cliente:
+      pos: [19, 28]
+      picture: '9(10)'
+    identificador_lote:
+      pos: [29,48]
+      picture: '9(20)'
+    tipo_arquivo:
+      pos: [49,49]
+      picture: 'X(1)'
+      default: 'R' #P = remessa / R = retorno
+    status:
+      pos: [50,51]
+      picture: '9(2)'
+    brancos:
+      pos: [52,200]
+      picture: 'X(149)'
+      default: ''
+
+  trailer_arquivo:
+    tipo_registro:
+      pos: [1,2]
+      picture: '9(2)'
+      default: 03
+    total_registros:
+      pos: [3,10]
+      picture: '9(8)'
+    valor_total:
+      pos: [11,24]
+      picture: '9(12)V9(2)'
+    brancos:
+      pos: [25,200]
+      picture: 'X(176)'
+      default: ''
+
+  detalhes:
+
+    segmento_02:
+      tipo_registro:
+        pos: [1,2]
+        picture: '9(2)'
+        default: 02
+      numero_cartao:
+        pos: [3,22]
+        picture: '9(20)'
+      valor_compra:
+        pos: [23,34]
+        picture: '9(10)V9(2)'
+      ref_transacao:
+        pos: [35,50]
+        picture: '9(16)'
+      identificacao_registro:
+        pos: [51,51]
+        picture: '9(1)' #0 = req. inicial / 1 = transação aprovada / 2 = transação negada
+      codigo_autorizacao:
+        pos: [52,57]
+        picture: 'X(6)'
+      validade_cartao:
+        pos: [58,61]
+        picture: '9(4)'
+      cod_resposta:
+        pos: [62,63]
+        picture: 'X(2)'
+      iso:
+        pos: [64,66]
+        picture: '9(3)'
+        default: 986
+      flag_cvv:
+        pos: [67,69]
+        picture: '9(3)'
+      cvv:
+        pos: [70,72]
+        picture: 'X(3)'
+      tipo_transacao:
+        pos: [73,73]
+        picture: '9(1)'
+      parcelamento:
+        pos: [74,75]
+        picture: '9(2)' # 00 = a vista / 02, 03, 04, etc.. parcelas
+      tipo_estorno:
+        pos: [76,76]
+        picture: '9(1)' # 0 = compra / 1 = estorno/cancelamento
+      data_transacao:
+        pos: [77,84]
+        picture: '9(8)' #AAAAMMDD
+      valor_estorno:
+        pos: [85,96]
+        picture: '9(10)V9(2)'
+      numero_cliente:
+        pos: [97,111]
+        picture: 'X(15)'
+      solicitacao_estorno:
+        pos: [112,126]
+        picture: 'X(15)'
+      identificacao_terminal:
+        pos: [127,134]
+        picture: 'X(8)'
+      brancos:
+        pos: [135,200]
+        picture: 'X(66)'
+        default: ''

@@ -62,9 +62,8 @@ remessa:
       picture: '9(12)'
     conta_debito_dv:
       pos: [71,71]
-      picture: 'X(1)'
-      default: ''
-    dac_debito:
+      picture: '9(1)'
+    brancos_02:
       pos: [72,72]
       picture: 'X(1)'
       default: ''
@@ -74,7 +73,7 @@ remessa:
     nome_banco:
       pos: [103,132]
       picture: 'X(30)'
-    brancos_02:
+    brancos_03:
       pos: [133,142]
       picture: 'X(10)'
       default: ''
@@ -99,8 +98,8 @@ remessa:
     densidade_gravacao:
       pos: [167,171]
       picture: '9(5)'
-      default: 0
-    brancos_03:
+      default: '06250'
+    brancos_04:
       pos: [172,240]
       picture: 'X(69)'
       default: ''
@@ -125,7 +124,7 @@ remessa:
     servico:
       pos: [10,11]
       picture: '9(2)'
-      default: ''
+      default: '80'
     forma_lancamento:
       pos: [12,13]
       picture: '9(2)'
@@ -160,9 +159,8 @@ remessa:
       picture: '9(12)'
     conta_debito_dv:
       pos: [71,71]
-      picture: 'X(1)'
-      default: ''
-    dac_debito:
+      picture: '9(1)'
+    brancos_02:
       pos: [72,72]
       picture: 'X(1)'
       default: ''
@@ -187,11 +185,8 @@ remessa:
       pos: [193,212]
       picture: 'X(20)'
     cep:
-      pos: [213,217]
-      picture: '9(5)'
-    complemento_cep:
-      pos: [218,220]
-      picture: 'X(3)'
+      pos: [213,220]
+      picture: '9(8)'
     estado:
       pos: [221,222]
       picture: 'X(2)'
@@ -199,7 +194,7 @@ remessa:
       pos: [223,224]
       picture: '9(2)'
       default: '01'
-    brancos_02:
+    brancos_03:
       pos: [225,230]
       picture: 'X(6)'
       default: ''
@@ -321,12 +316,9 @@ remessa:
         pos: [29,29]
         picture: 'X(1)'
       conta_favorecido:
-        pos: [30,41]
-        picture: '9(12)'
-      conta_favorecido_dv:
-        pos: [42,42]
-        picture: 'X(1)'
-      dac_favorecido:
+        pos: [30,42]
+        picture: '9(13)'
+      brancos_00:
         pos: [43,43]
         picture: 'X(1)'
         default: ''
@@ -355,10 +347,12 @@ remessa:
         picture: 'X(20)'
       data_efetiva:
         pos: [155,162]
-        picture: 'X(8)'
+        picture: '9(8)'
+        default: '0'
       valor_efetivo:
         pos: [163,177]
         picture: '9(13)V9(2)'
+        default: 0
       informacao:
         pos: [178,217]
         picture: 'X(40)'
@@ -368,6 +362,7 @@ remessa:
       finalidade_ted:
         pos: [220,224]
         picture: 'X(5)'
+        default: '00010'
       finalidade_complementar:
         pos: [225,226]
         picture: 'X(2)'
@@ -430,17 +425,18 @@ remessa:
         pos: [98,117]
         picture: 'X(20)'
       cep:
-        pos: [118,122]
-        picture: '9(5)'
-      complemento_cep:
-        pos: [123,125]
-        picture: '9(3)'
+        pos: [118,125]
+        picture: '9(8)'
       estado:
         pos: [126,127]
         picture: 'X(2)'
+      vencimento:
+        pos: [128,135]
+        picture: '9(8)'
       brancos_02:
-        pos: [128,210]
-        picture: 'X(83)'
+        pos: [136,210]
+        picture: '9(75)'
+        default: 0
       doc_favorecido:
         pos: [211,225]
         picture: 'X(15)'
@@ -455,6 +451,7 @@ remessa:
       codigo_ispb:
         pos: [233,240]
         picture: '9(8)'
+        default: 0
 
     segmento_c:
       codigo_banco:
@@ -587,12 +584,8 @@ retorno:
       picture: 'X(1)'
       default: ''
     conta_debito:
-      pos: [59,70]
-      picture: '9(12)'
-    conta_debito_dv:
-      pos: [71,71]
-      picture: 'X(1)'
-      default: ''
+      pos: [59,71]
+      picture: '9(13)'
     dac_debito:
       pos: [72,72]
       picture: 'X(1)'
@@ -685,12 +678,8 @@ retorno:
       picture: 'X(1)'
       default: ''
     conta_debito:
-      pos: [59,70]
-      picture: '9(12)'
-    conta_debito_dv:
-      pos: [71,71]
-      picture: 'X(1)'
-      default: ''
+      pos: [59,71]
+      picture: '9(13)'
     dac_debito:
       pos: [72,72]
       picture: 'X(1)'
@@ -716,11 +705,8 @@ retorno:
       pos: [193,212]
       picture: 'X(20)'
     cep:
-      pos: [213,217]
-      picture: '9(5)'
-    complemento_cep:
-      pos: [218,220]
-      picture: 'X(3)'
+      pos: [213,220]
+      picture: '9(8)'
     estado:
       pos: [221,222]
       picture: 'X(2)'
@@ -850,11 +836,8 @@ retorno:
         pos: [29,29]
         picture: 'X(1)'
       conta_favorecido:
-        pos: [30,41]
-        picture: '9(12)'
-      conta_favorecido_dv:
-        pos: [42,42]
-        picture: 'X(1)'
+        pos: [30,42]
+        picture: '9(13)'
       dac_favorecido:
         pos: [43,43]
         picture: 'X(1)'
@@ -958,11 +941,8 @@ retorno:
         pos: [98,117]
         picture: 'X(20)'
       cep:
-        pos: [118,122]
-        picture: '9(5)'
-      complemento_cep:
-        pos: [123,125]
-        picture: '9(3)'
+        pos: [118,125]
+        picture: '9(8)'
       estado:
         pos: [126,127]
         picture: 'X(2)'
