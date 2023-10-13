@@ -21,10 +21,11 @@
 
 namespace CnabParser\Input;
 
-use CnabParser\IntercambioBancarioRemessaFileAbstract;
 use CnabParser\Model\Linha;
 use CnabParser\Model\Retorno;
 use CnabParser\Parser\Layout;
+use CnabParser\Exception\RetornoException;
+use CnabParser\IntercambioBancarioRemessaFileAbstract;
 
 class RemessaFile extends IntercambioBancarioRemessaFileAbstract
 {
@@ -40,7 +41,7 @@ class RemessaFile extends IntercambioBancarioRemessaFileAbstract
 
         $this->linhas = file($this->path, FILE_IGNORE_NEW_LINES);
         if (false === $this->linhas) {
-            throw new RetornoException('Falha ao ler linhas do arquivo de remessa "'.$this->path.'".');
+            throw new RetornoException('Falha ao ler linhas do arquivo de remessa "' . $this->path . '".');
         }
 
         $this->totalLotes = 1;
@@ -96,6 +97,10 @@ class RemessaFile extends IntercambioBancarioRemessaFileAbstract
         if (strtoupper($tipoLayout) === strtoupper('cnab200')) {
             $this->decodeLoteCnab200();
         }
+
+        if (strtoupper($tipoLayout) === strtoupper('cnab400')) {
+            $this->decodeLotesCnab400();
+        }
     }
 
     private function decodeLoteCnab200()
@@ -132,7 +137,70 @@ class RemessaFile extends IntercambioBancarioRemessaFileAbstract
 
             // estamos tratando detalhes
             $codigoSegmento = $linha->obterValorCampo($defCodigoSegmento);
-            $dadosSegmento = $linha->getDadosSegmento('segmento_'.strtolower($codigoSegmento));
+            $dadosSegmento = $linha->getDadosSegmento('segmento_' . strtolower($codigoSegmento));
+            $segmentos[$codigoSegmento] = $dadosSegmento;
+            $proximaLinha = new Linha($this->linhas[$index + 1], $this->layout, 'remessa');
+            $proximoCodigoSegmento = $proximaLinha->obterValorCampo($defCodigoSegmento);
+            // se (
+            //     proximo codigoSegmento é o primeiro OU
+            //     codigoSegmento é ultimo
+            // )
+            // entao fecha o titulo e adiciona em $detalhes
+            if (
+                strtolower($proximoCodigoSegmento) === strtolower($primeiroCodigoSegmentoLayout) ||
+                strtolower($codigoSegmento) === strtolower($ultimoCodigoSegmentoLayout)
+            ) {
+                $lote['titulos'][] = $segmentos;
+                // novo titulo, novos segmentos
+                $segmentos = array();
+            }
+        }
+
+        $this->model->lotes[] = $lote;
+    }
+
+    private function decodeLotesCnab400()
+    {
+        $defTipoRegistro = array(
+            'pos'     => array(1, 1),
+            'picture' => '9(1)',
+        );
+
+        // para Cnab400 codigo do segmento na configuracao yaml é o codigo do registro
+        $defCodigoSegmento = array(
+            'pos'     => array(1, 1),
+            'picture' => '9(1)',
+        );
+
+        $defNumeroRegistro = array(
+            'pos'     => array(395, 400),
+            'picture' => '9(6)',
+        );
+
+        $codigoLote = null;
+        $primeiroCodigoSegmentoLayout = $this->layout->getPrimeiroCodigoSegmentoRemessa();
+        $ultimoCodigoSegmentoLayout = $this->layout->getUltimoCodigoSegmentoRemessa();
+
+        $lote = null;
+        $segmentos = array();
+        foreach ($this->linhas as $index => $linhaStr) {
+            $linha = new Linha($linhaStr, $this->layout, 'remessa');
+            $tipoRegistro = (int) $linha->obterValorCampo($defTipoRegistro);
+
+            if ($tipoRegistro === IntercambioBancarioRemessaFileAbstract::REGISTRO_HEADER_ARQUIVO_400) {
+                continue;
+            }
+
+            if ($tipoRegistro === IntercambioBancarioRemessaFileAbstract::REGISTRO_TRAILER_ARQUIVO_400) {
+                $lote['titulos'][] = $segmentos;
+                $segmentos = array();
+                break;
+            }
+
+            // estamos tratando detalhes
+            $codigoSegmento = $linha->obterValorCampo($defCodigoSegmento);
+            $numeroRegistro = $linha->obterValorCampo($defNumeroRegistro);
+            $dadosSegmento = $linha->getDadosSegmento('segmento_' . strtolower($codigoSegmento));
             $segmentos[$codigoSegmento] = $dadosSegmento;
             $proximaLinha = new Linha($this->linhas[$index + 1], $this->layout, 'remessa');
             $proximoCodigoSegmento = $proximaLinha->obterValorCampo($defCodigoSegmento);

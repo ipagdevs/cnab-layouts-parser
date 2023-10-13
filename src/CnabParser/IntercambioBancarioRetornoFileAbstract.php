@@ -21,10 +21,11 @@
 
 namespace CnabParser;
 
-use CnabParser\Parser\Layout;
 use CnabParser\Model\Linha;
 use CnabParser\Model\Retorno;
+use CnabParser\Parser\Layout;
 use CnabParser\Format\Picture;
+use CnabParser\Exception\RetornoException;
 
 abstract class IntercambioBancarioRetornoFileAbstract extends IntercambioBancarioFileAbstract
 {
@@ -38,7 +39,7 @@ abstract class IntercambioBancarioRetornoFileAbstract extends IntercambioBancari
 	// Para CNAB400
 
 	/**
-	 * @var CnabParser\Parser\Layout
+	 * @var \CnabParser\Parser\Layout
 	 */
 	protected $layout;
 
@@ -64,7 +65,7 @@ abstract class IntercambioBancarioRetornoFileAbstract extends IntercambioBancari
 
 		$this->linhas = file($this->path, FILE_IGNORE_NEW_LINES);
 		if (false === $this->linhas) {
-			throw new RetornoException('Falha ao ler linhas do arquivo de retorno "'.$this->path.'".');
+			throw new RetornoException('Falha ao ler linhas do arquivo de retorno "' . $this->path . '".');
 		}
 
 		$this->calculaTotalLotes();
@@ -98,5 +99,19 @@ abstract class IntercambioBancarioRetornoFileAbstract extends IntercambioBancari
 		}
 
 		return $this->totalLotes;
+	}
+
+	public function getTamanhoRegistro()
+	{
+		return strlen($this->linhas[0]);
+	}
+
+	public function getAllLinhas()
+	{
+		$arquivo = '';
+		foreach ($this->linhas as $linha) {
+			$arquivo .= $linha . PHP_EOL;
+		}
+		return $arquivo;
 	}
 }

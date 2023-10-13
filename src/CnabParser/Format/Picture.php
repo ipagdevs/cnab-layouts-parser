@@ -69,7 +69,7 @@ class Picture
             } elseif ($m['tipo1'] == '9') {
                 if ($value instanceof \DateTime) {
                     if (@$options['date_format']) {
-                        $value = strftime($options['date_format'], $value->getTimestamp());
+                        $value = date($options['date_format'], $value->getTimestamp());
                     } else {
                         if ((int) $m['tamanho1'] == 8) {
                             $value = $value->format('dmY');
@@ -110,7 +110,7 @@ class Picture
                     }
                     $valor_right = \str_pad($exp[1], $tamanho_right, '0', STR_PAD_RIGHT);
 
-                    return $valor_left.$valor_right;
+                    return $valor_left . $valor_right;
                 } elseif (!$m['tipo2']) {
                     $value = self::parseNumber($value);
 
@@ -144,9 +144,9 @@ class Picture
                     $tamanho_left = (int) $m['tamanho1'];
                     $tamanho_right = (int) $m['tamanho2'];
                     $valor_left = self::parseNumber(substr($value, 0, $tamanho_left));
-                    $valor_right = '0.'.substr($value, $tamanho_left, $tamanho_right);
-                    if ((double) $valor_right > 0) {
-                        return $valor_left + (double) $valor_right;
+                    $valor_right = '0.' . substr($value, $tamanho_left, $tamanho_right);
+                    if ((float) $valor_right > 0) {
+                        return $valor_left + (float) $valor_right;
                     } else {
                         return self::parseNumber($valor_left);
                     }

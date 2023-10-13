@@ -32,6 +32,16 @@ abstract class IntercambioBancarioRemessaFileAbstract extends IntercambioBancari
     const REGISTRO_DETALHES = 02;
     const REGISTRO_TRAILER_ARQUIVO = 03;
 
+    // Para CNAB400
+    const REGISTRO_HEADER_ARQUIVO_400 = 0;
+    const REGISTRO_DETALHES_400 = 1;
+    const REGISTRO_TRAILER_ARQUIVO_400 = 9;
+
+    public $layout;
+    public $path;
+    public $linhas;
+    public $totalLotes;
+
     public function __construct(IntercambioBancarioAbstract $model)
     {
         $this->model = $model;
@@ -47,5 +57,10 @@ abstract class IntercambioBancarioRemessaFileAbstract extends IntercambioBancari
             }
         }
         return $encoded;
+    }
+
+    public function getTamanhoRegistro()
+    {
+        return strlen($this->linhas[0]);
     }
 }

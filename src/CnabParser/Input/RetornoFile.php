@@ -21,8 +21,8 @@
 
 namespace CnabParser\Input;
 
-use CnabParser\IntercambioBancarioRetornoFileAbstract;
 use CnabParser\Model\Linha;
+use CnabParser\IntercambioBancarioRetornoFileAbstract;
 
 class RetornoFile extends IntercambioBancarioRetornoFileAbstract
 {
@@ -121,27 +121,33 @@ class RetornoFile extends IntercambioBancarioRetornoFileAbstract
                     $lote = array(
                         'codigo_lote'  => $codigoLote,
                         'header_lote'  => $this->model->decodeHeaderLote($linha),
-                        'trailer_lote' => $this->model->decodeTrailerLote($linha),
+                        'trailer_lote' => array(),
                         'titulos'      => array(),
                     );
                     break;
                 case IntercambioBancarioRetornoFileAbstract::REGISTRO_DETALHES:
                     $codigoSegmento = $linha->obterValorCampo($defCodigoSegmento);
                     $numeroRegistro = $linha->obterValorCampo($defNumeroRegistro);
-                    $dadosSegmento = $linha->getDadosSegmento('segmento_'.strtolower($codigoSegmento));
+                    $dadosSegmento = $linha->getDadosSegmento('segmento_' . strtolower($codigoSegmento));
                     $segmentos[$codigoSegmento] = $dadosSegmento;
                     $proximaLinha = new Linha($this->linhas[$index + 1], $this->layout, 'retorno');
                     $proximoCodigoSegmento = $proximaLinha->obterValorCampo($defCodigoSegmento);
+                    $proximoTipoRegistro = $proximaLinha->obterValorCampo($defTipoRegistro);
                     // se codigoSegmento é ultimo OU proximo codigoSegmento é o primeiro
+                    // OU proximoTipoRegistro é trailer lote
                     // entao fecha o titulo e adiciona em $detalhes
-                    if (strtolower($codigoSegmento) === strtolower($ultimoCodigoSegmentoLayout) ||
-                        strtolower($proximoCodigoSegmento) === strtolower($primeiroCodigoSegmentoLayout)) {
+                    if (
+                        strtolower($codigoSegmento) === strtolower($ultimoCodigoSegmentoLayout) ||
+                        strtolower($proximoCodigoSegmento) === strtolower($primeiroCodigoSegmentoLayout) ||
+                        strtolower($proximoTipoRegistro) == IntercambioBancarioRetornoFileAbstract::REGISTRO_TRAILER_LOTE
+                    ) {
                         $lote['titulos'][] = $segmentos;
                         // novo titulo, novos segmentos
                         $segmentos = array();
                     }
                     break;
-                case IntercambioBancarioRetornoFileAbstract::REGISTRO_TRAILER_ARQUIVO:
+                case IntercambioBancarioRetornoFileAbstract::REGISTRO_TRAILER_LOTE:
+                    $lote['trailer_lote'] = $this->model->decodeTrailerLote($linha);
                     $this->model->lotes[] = $lote;
                     $titulos = array();
                     $segmentos = array();
@@ -191,7 +197,7 @@ class RetornoFile extends IntercambioBancarioRetornoFileAbstract
             // estamos tratando detalhes
             $codigoSegmento = $linha->obterValorCampo($defCodigoSegmento);
             $numeroRegistro = $linha->obterValorCampo($defNumeroRegistro);
-            $dadosSegmento = $linha->getDadosSegmento('segmento_'.strtolower($codigoSegmento));
+            $dadosSegmento = $linha->getDadosSegmento('segmento_' . strtolower($codigoSegmento));
             $segmentos[$codigoSegmento] = $dadosSegmento;
             $proximaLinha = new Linha($this->linhas[$index + 1], $this->layout, 'retorno');
             $proximoCodigoSegmento = $proximaLinha->obterValorCampo($defCodigoSegmento);
