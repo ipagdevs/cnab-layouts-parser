@@ -95,7 +95,7 @@ class Lote implements \JsonSerializable
 		return $this;
 	}
 
-	public function jsonSerialize()
+	public function jsonSerialize(): mixed
     {
     	$headerLote = $this->header->jsonSerialize();
     	$trailerLote = $this->trailer->jsonSerialize();
