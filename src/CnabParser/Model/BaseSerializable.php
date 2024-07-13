@@ -29,7 +29,7 @@ abstract class BaseSerializable implements \JsonSerializable
      */
     protected $data;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->data;
     }

@@ -96,7 +96,7 @@ abstract class IntercambioBancarioAbstract implements \JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $headerArquivo = $this->header->jsonSerialize();
         $trailerArquivo = $this->trailer->jsonSerialize();
