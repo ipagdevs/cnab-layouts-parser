@@ -1,12 +1,12 @@
 {
-	"name": "ipagdevs/cnab-layouts-parser",
-    "description": "Isso é uma fork de: glauberportella/cnab-layouts-parser",
+	"name": "leonardyrj/cnab-layouts-parser",
+    "description": "Isso é uma fork de: ipagdevs/cnab-layouts-parser",
     "type": "project",
     "license": "MIT",
     "authors": [
         {
-            "name": "João Hernandes",
-            "email": "joao@ipag.com.br"
+            "name": "Leonardy Cardoso",
+            "email": "leonardyrj@gmail.com"
         }
     ],
     "autoload": {
