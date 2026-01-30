@@ -54,10 +54,17 @@ class Linha
 		$layout = $this->tipo === 'remessa'
 			? $this->layout->getRemessaLayout()
 			: $this->layout->getRetornoLayout();
-		$campos = $layout['detalhes'][$segmentoKey];
+
+		$campos = $layout['detalhes'][$segmentoKey] ?? null;
+		// @NOTE:  We must ensure $campos is an array or an iterable structure
+		if (!is_array($campos) && !($campos instanceof \Traversable)) {
+			throw new LinhaException('Definição de segmento inválida: ' . $segmentoKey);
+		}
+
 		foreach ($campos as $nome => $definicao) {
 			$dados[$nome] = $this->obterValorCampo($definicao);
 		}
+
 		return $dados;
 	}
 
@@ -86,5 +93,4 @@ class Linha
 	{
 		return $this->tipo;
 	}
-
 }
