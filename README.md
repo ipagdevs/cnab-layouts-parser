@@ -6,7 +6,7 @@ Isso é uma fork de: https://github.com/glauberportella/cnab-layouts-parser
 
 Instale via composer:
 
-`composer require jrodella/cnab-layouts-parser`
+`composer require leonardyrj/cnab-layouts-parser`
 
 # Exemplos
 
